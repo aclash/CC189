@@ -49,11 +49,60 @@ bool isUnique_onlyLower(string str) {
 	return true;
 }
 
+//1.2 Given two strings, write a method to decide if one is a permutation of the other.
+//question: can I assume the string consists of only ASCII character? Otherwise need more space to store character's hash value
+//time complexity: O(n), n is the length of string
+//space complexity: O(1), integer array with length of 256.
+bool isPermuation(string str1, string str2) {
+	if (str1.length() != str2.length())
+		return false;
+	int hash[128];
+	memset(hash, 0, sizeof(hash));
+	for (int i = 0; i < str1.size(); ++i) {
+		++hash[str1[i]];
+		--hash[str2[i]];
+	}
+	for (int i = 0; i < 128; ++i)
+		if (hash[i] != 0)
+			return false;
+	return true;
+}
+
+//1.3 Write a method to replace all spaces with %20
+void URLify(string& str, int length) {
+	int spaceCnt = 0;
+	int len = length < str.size() ? length : str.size();
+	for (int i = 0; i < len; ++i) {
+		if (str[i] == ' ')
+			++spaceCnt;
+	}
+	str.resize(length + spaceCnt * 2);
+	for (int i = length - 1, j = str.size() - 1; i >= 0, j >=0; --i) {
+		if (str[i] != ' ') {
+			str[j] = str[i];
+			--j;
+		}
+		else {
+			str[j] = '0';
+			str[j - 1] = '2';
+			str[j - 2] = '%';
+			j -= 3;
+		}
+	}
+}
+
+//void URLify(char[] str, int length) {
+//	
+//}
 int main()
 {
 	string str;
-	while (cin >> str) {
-		cout << isUnique_onlyLower(str) << endl;
+	int len;
+	while (getline(cin, str)) {
+		cin >> len;
+		URLify(str, len);
+		cout << str<<endl;
+		cin.get();
 	}
 	system("pause");
 	return 0;
