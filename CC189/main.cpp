@@ -91,18 +91,57 @@ void URLify(string& str, int length) {
 	}
 }
 
-//void URLify(char[] str, int length) {
-//	
+//take array as parameter
+//vector<char> URLify(const char str[], int length) {
+//	vector<char> ret(length + 1);
+//	strcpy_s(&ret[0], length, str);
+//	return ret;
 //}
+
+//1.4 Given a string, write a method to check if it is a permutation of a palindrome.
+//assume the string consists of only ASCII
+//time complexity: O(n), n is the length of string
+//space complexity: O(1), 128 integer
+//optimization: if the string only consists of lowercase, use one int as hash, check if hash_int has exactly one bit set to 1: number & (number - 1) == 0
+bool isPermutationPalindrome(string str) {
+	vector<int> hash(128);
+	int checker = 0;
+	for (int i = 0; i < str.size(); ++i) {
+		if (hash[str[i]] == 0) {
+			++checker;
+			++hash[str[i]];
+		}
+		else {
+			--checker;
+			--hash[str[i]];
+		}
+	}
+	if (checker == 0 || checker == 1)
+		return true;
+	else
+		return false;
+}
+
+bool isPermutationPalindromeLowerCase(string str) {
+	int int_hash = 0;
+	for (int i = 0; i < str.size(); ++i) {
+		int val = str[i] - 'a';
+		if (int_hash & (1 << val) == 0)
+			int_hash |= (1 << val);
+		else
+			int_hash &= ~(1 << val);
+	}
+	if (int_hash == 0 || (int_hash & (int_hash - 1) == 0))
+		return true;
+	else
+		return false;
+}
+
 int main()
 {
 	string str;
-	int len;
 	while (getline(cin, str)) {
-		cin >> len;
-		URLify(str, len);
-		cout << str<<endl;
-		cin.get();
+		cout << isPermutationPalindrome(str) << endl;
 	}
 	system("pause");
 	return 0;
