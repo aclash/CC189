@@ -137,11 +137,56 @@ bool isPermutationPalindromeLowerCase(string str) {
 		return false;
 }
 
+//1.5 Given two string, there are 3 types of edits can be performed on strings: insert/delete/replace a character; 
+//check if they are on edit away.
+//time complexity: O(n), n is the lenght of short string 
+//space complexity: O(1)
+bool isOneWayEdit(string str1, string str2) {
+	if (str1.length() == str2.length()) {
+		bool flag = false;
+		for (int i = 0; i < str1.size(); ++i) {
+			if (str1[i] != str2[i]) {
+				if (flag)
+					return false;
+				else
+					flag = true;
+			}
+		}
+	}
+	else if (str1.length() == str2.length() + 1) {
+		bool flag = false;
+		for (int i = 0, index = 0; i < str2.size(); ++i, ++index) {
+			if (str1[index] != str2[i]) {
+				++index;
+				if (flag)
+					return false;
+				else
+					flag = true;
+			}
+		}
+	}
+	else if (str1.length() == str2.length() - 1) {
+		bool flag = false;
+		for (int i = 0, index = 0; i < str1.size(); ++i, ++index) {
+			if (str1[i] != str2[index]) {
+				++index;
+				if (flag)
+					return false;
+				else
+					flag = true;
+			}
+		}
+	}
+	else
+		return false;
+	return true;
+}
+
 int main()
 {
-	string str;
-	while (getline(cin, str)) {
-		cout << isPermutationPalindrome(str) << endl;
+	string str1, str2;
+	while (getline(cin, str1) && getline(cin, str2)) {
+		cout << isOneWayEdit(str1, str2) << endl;
 	}
 	system("pause");
 	return 0;
