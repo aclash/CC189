@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <assert.h>
 #include <bitset>
 #include <fstream>
 #include <functional>
@@ -182,11 +183,80 @@ bool isOneWayEdit(string str1, string str2) {
 	return true;
 }
 
+//1.6 string compression: input: aaabbcccc; output: a3b2c4
+//int to char(smaller than 10): char ch = '0' + num;
+//int to char*: char* itoa(int num, char*, int base)
+//char* to int: int atoi(const char*)
+//int to string: to_string(int num)
+//string to int: int stoi(const string& str, size_t num = 0, size_t base = 0)
+//in java: string copy is O(n^2) since each character's copy will make a copy of whole string(1 + 2 + 3 + ... + n), 
+//StringBuilder is O(n)
+//StringBuilder sb = new StringBuilder(len)
+//for (int i = 0; i < str.length(); ++i) {
+//	sb.append(str[i]);
+//}
+//tc: O(n), n is length of str
+//sc: O(n), n is length of str
+//optimazation: each copy of string will take more time, for example, if the capacity of stringbuild is full, it need double of
+//its size and rearrage each element, so we can compute the length of final string in advance so that set the size of stringbuild in advance
+int computeSize(string str) {
+	assert(str.size() > 0);
+	int sum = 0;
+	int cnt = 1;
+	char firstChar = str[0];
+	for (int i = 1; i < str.size(); ++i) {
+		if (firstChar != str[i]) {
+			sum += (to_string(cnt).length() + 1);
+			cnt = 1;
+			firstChar = str[i];
+		}
+		else
+			++cnt;
+	}
+	sum += (to_string(cnt).length() + 1);
+	return sum;
+}
+
+string stringCompression(string str) {
+	string ret;
+	if (str.size() == 0)
+		return str;
+	int len = computeSize(str);
+	if (len >= str.length())
+		return str;
+	else
+		ret.resize(len);
+
+	//must initialize to empty string otherwise push_back will insert element after empty elment
+	//********//
+	ret = "";
+	//************//
+
+	char firstChar = str[0];
+	int cnt = 1;
+	for (int i = 1; i < str.size(); ++i) {
+		if (firstChar == str[i])
+			++cnt;
+		else {
+			ret.push_back(firstChar);
+			ret += to_string(cnt);
+			firstChar = str[i];
+			cnt = 1;
+		}
+	}
+	ret.push_back(firstChar);
+	ret += to_string(cnt);
+	if (ret.length() < str.length())
+		return ret;
+	else
+		return str;
+}
+
 int main()
 {
-	string str1, str2;
-	while (getline(cin, str1) && getline(cin, str2)) {
-		cout << isOneWayEdit(str1, str2) << endl;
+	string str;
+	while (cin >> str) {
+		cout << stringCompression(str) << endl;
 	}
 	system("pause");
 	return 0;
