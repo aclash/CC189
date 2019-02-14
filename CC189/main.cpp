@@ -380,15 +380,28 @@ void OptZeroMatrix(vector<vector<int>>& matrix) {
 			matrix[i][0] = 0;
 }
 
+//* 1.9 Given two string, check if one is the rotation of another.
+// impressive..... S1 = xy, S2 = yx, S1 is substring of xyxy, and always be substring of S1S1, 
+//the length of S1 must be equal to S2	
+bool isRotation(string str1, string str2) {
+	if (str1.length() != str2.length())
+		return false;
+	string str = str1 + str1;
+	if (str.find(str2) != string::npos)
+		return true;
+	else
+		return false;
+}
 int main()
 {
 	string str;
 	/*while (cin >> str) {
 		cout << stringCompression(str) << endl;
 	}*/
-	vector<vector<int>> vec = { {0, 2, 3, 4, 0}, {6, 7, 8 ,9 ,10},{ 11, 12, 0, 14, 15 } ,{ 16, 17, 18, 19, 20 } ,{ 21, 22, 23, 24, 25 } };
-	OptZeroMatrix(vec);
-	output(vec);
+	//vector<vector<int>> vec = { {0, 2, 3, 4, 0}, {6, 7, 8 ,9 ,10},{ 11, 12, 0, 14, 15 } ,{ 16, 17, 18, 19, 20 } ,{ 21, 22, 23, 24, 25 } };
+	//OptZeroMatrix(vec);
+	//output(vec);
+	cout << isRotation("2221", "1222");
 	system("pause");
 	return 0;
 }
