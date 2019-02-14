@@ -18,6 +18,25 @@
 #include <unordered_set>
 #include <vector>
 using namespace std;
+
+template <typename T>
+void output(vector<T>& vec)
+{
+	for (auto& x : vec)
+		cout << x << " , ";
+	cout << endl;
+}
+
+template <typename T>
+void output(vector<vector<T>>& vecs)
+{
+	for (auto& vec : vecs) {
+		for (auto& x : vec) {
+			cout << x << " ";
+		}
+		cout << endl;
+	}
+}
 //1.1 implement an algorithm to determine if a string has all unique charactera, What if you cannot use additional data structures?
 //question: can I assume the string consists of only ASCII charater? Otherwise I should increase the storage.
 //time complexity: O(N), N is the lenght of string, or it could be O(1), since the length of string no more than 128.
@@ -252,12 +271,124 @@ string stringCompression(string str) {
 		return str;
 }
 
+//1.7 Given N*N matrix, rotate it by 90 degree in place.
+//tc: O(N^2)
+//sc: O(1)
+void rotateMatrix(vector<vector<int>>& matrix) {
+	if (matrix.size() == 0)
+		return;
+	int cnt = 0;
+	int N = matrix.size();
+	for (int i = 0; i <= (N - 2) / 2; ++i) {
+		for (int j = i; j <= N - 2 - i; ++j) {
+			++cnt;
+			int tmp = matrix[i][j];
+			int x = i;
+			int y = j;
+			for (int k = 0; k < 4; ++k) {
+				int xx = y;
+				int yy = N - 1 - x;
+				swap(matrix[xx][yy], tmp);
+				x = xx;
+				y = yy;
+			}
+		}
+	}
+	assert(cnt == ((N * N) % 2 == 0 ? N * N / 4 : (N * N - 1) / 4));
+}
+
+//1.8
+//Given a matrix, if any entry is 0, set its row and column as 0
+//tc: O(M*N)
+//sc: O(M+N)
+//optimization: sc could be O(1), tc also O(M * N), take first row and first col as storage
+void SetZero(vector<vector<int>>& matrix) {
+	int row = matrix.size();
+	if (row <= 0)
+		return;
+	int col = matrix[0].size();
+	vector<bool> flag_row(row);
+	vector<bool> flag_col(col);
+	for (int i = 0; i < row; ++i) {
+		for (int j = 0; j < col; ++j) {
+			if (matrix[i][j] == 0) {
+				flag_row[i] = true;
+				flag_col[j] = true;
+			}
+		}
+	}
+	for (int i = 0; i < row; ++i) {
+		if (flag_row[i]) {
+			for (int j = 0; j < col; ++j)
+				matrix[i][j] = 0;
+		}
+	}
+	for (int i = 0; i < col; ++i) {
+		if (flag_col[i]) {
+			for (int j = 0; j < row; ++j)
+				matrix[j][i] = 0;
+		}
+	}
+}
+
+void OptZeroMatrix(vector<vector<int>>& matrix) {
+	int row = matrix.size();
+	if (row <= 0)
+		return;
+	int col = matrix[0].size();
+	int row0 = 1;
+	int col0 = 1;
+	for (int i = 0; i < col; ++i) {
+		if (matrix[0][i] == 0) {
+			row0 = 0;
+			break;
+		}
+	}
+	for (int i = 0; i < row; ++i) {
+		if (matrix[i][0] == 0) {
+			col0 = 0;
+			break;
+		}
+	}
+	for (int i = 1; i < row; ++i) {
+		for (int j = 1; j < col; ++j) {
+			if (matrix[i][j] == 0) {
+				matrix[i][0] = 0;
+				matrix[0][j] = 0;
+			}
+		}
+	}
+	for (int i = 1; i < col; ++i) {
+		if (matrix[0][i] == 0) {
+			for (int j = 1; j < row; ++j) {
+				matrix[j][i] = 0;
+			}
+		}
+	}
+	for (int i = 1; i < row; ++i) {
+		if (matrix[i][0] == 0) {
+			for (int j = 1; j < col; ++j) {
+				matrix[i][j] = 0;
+			}
+		}
+	}
+	if (row0 == 0)
+		for (int i = 0; i < row; ++i)
+			matrix[0][i] = 0;
+	if (col0 == 0)
+		for (int i = 0; i < col; ++i)
+			matrix[i][0] = 0;
+}
+
 int main()
 {
 	string str;
-	while (cin >> str) {
+	/*while (cin >> str) {
 		cout << stringCompression(str) << endl;
-	}
+	}*/
+	vector<vector<int>> vec = { {0, 2, 3, 4, 0}, {6, 7, 8 ,9 ,10},{ 11, 12, 0, 14, 15 } ,{ 16, 17, 18, 19, 20 } ,{ 21, 22, 23, 24, 25 } };
+	OptZeroMatrix(vec);
+	output(vec);
 	system("pause");
 	return 0;
 }
